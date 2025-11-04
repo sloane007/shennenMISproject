@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Resume</title>
+  <style>
+    :root{
+      --nav-bg:#3b6b56;
+      --accent:#c07a4b;
+      --accent-light:#d68a60;
+      --accent-dark:#a8693a;
+      --muted:#6b6b57;
+      --page-bg:#f6f3ee;
+      --card-bg:#fffdf9;
+      --text-primary:#2b2b26;
+      --text-secondary:#4a4a45;
+      --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:0 6px 20px rgba(0,0,0,0.12);
+      --shadow-lg:0 12px 32px rgba(0,0,0,0.16);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      margin:0;
+      padding:0;
+      background:linear-gradient(135deg, #f6f3ee 0%, #f0ebe4 100%);
+      color:var(--text-primary);
+      line-height:1.7;
+      letter-spacing:0.01em;
+      min-height:100vh;
+    }
+    header{
+      background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
+      color:#fff;
+      padding:1rem 1.5rem;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:var(--shadow-md);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    ul{list-style:none;display:flex;gap:0.5rem;margin:0;padding:0}
+    a{
+      color:#fff;
+      text-decoration:none;
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+      padding:0.6rem 1rem;
+      border-radius:8px;
+      display:inline-block;
+      font-weight:500;
+    }
+    a:hover{
+      background:rgba(255,255,255,0.2);
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    main{max-width:1200px;margin:3rem auto;padding:0 1.5rem}
+    .card{
+      background:var(--card-bg);
+      padding:2.5rem;
+      border-radius:16px;
+      box-shadow:var(--shadow-sm);
+      transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+      opacity:0;
+      animation:fadeInUp 0.6s ease forwards;
+      border:1px solid rgba(59,107,86,0.08);
+    }
+    .card:hover{
+      transform:translateY(-5px);
+      box-shadow:var(--shadow-lg);
+      border-color:rgba(192,122,75,0.2);
+    }
+    .back-btn{
+      display:inline-block;
+      padding:0.75rem 1.5rem;
+      background:linear-gradient(135deg, var(--text-primary) 0%, #1a1a16 100%);
+      color:#fff;
+      border-radius:10px;
+      text-decoration:none;
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+      margin-top:1.5rem;
+      font-weight:600;
+      box-shadow:var(--shadow-sm);
+    }
+    .back-btn:hover{
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      transform:translateX(-5px);
+      box-shadow:var(--shadow-md);
+    }
+
+  /* Resume layout: make the web resume (right column) bigger than the embedded PDF */
+  .resume-grid{
+    display:grid;
+    grid-template-columns:0.6fr 1.4fr;
+    gap:2rem;
+    align-items:start;
+    opacity:0;
+    animation:fadeInUp 0.6s ease 0.3s forwards;
+  }
+  /* Center the PDF inside its column and constrain its width for better readability */
+  .pdf-viewer{
+    display:flex;
+    justify-content:center;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .pdf-viewer:hover{transform:scale(1.02)}
+  .pdf-viewer iframe{
+    width:100%;
+    max-width:780px;
+    height:calc(100vh - 220px);
+    border:0;
+    border-radius:14px;
+    display:block;
+    box-shadow:var(--shadow-lg);
+    transition:box-shadow 0.3s ease;
+  }
+  .pdf-viewer:hover iframe{
+    box-shadow:0 16px 48px rgba(0,0,0,0.3);
+  }
+    .resume-section{
+      font-size:1.05rem;
+      line-height:1.7;
+      transition:all 0.3s ease;
+      padding:1.5rem;
+      border-radius:14px;
+      background:rgba(255,255,255,0.5);
+    }
+    .resume-section:hover{
+      background:rgba(59,107,86,0.08);
+      box-shadow:var(--shadow-sm);
+    }
+    .resume-section h1{
+      margin-top:0;
+      transition:color 0.3s ease;
+      font-size:1.75rem;
+      font-weight:600;
+      color:var(--text-primary);
+    }
+    .resume-section:hover h1{color:var(--accent)}
+    .resume-section p{
+      color:var(--text-secondary);
+      margin:0 0 1rem;
+      line-height:1.7;
+    }
+    .download-btn{
+      display:inline-block;
+      margin:0.75rem 0;
+      padding:0.875rem 1.75rem;
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color:#fff;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:600;
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow-sm);
+      letter-spacing:0.02em;
+    }
+    .download-btn::before{
+      content:'';
+      position:absolute;
+      top:50%;
+      left:50%;
+      width:0;
+      height:0;
+      border-radius:50%;
+      background:rgba(255,255,255,0.3);
+      transform:translate(-50%, -50%);
+      transition:width 0.6s, height 0.6s;
+    }
+    .download-btn:hover::before{width:400px;height:400px}
+    .download-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-md);
+      background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+    }
+    .download-btn:active{transform:translateY(0)}
+    .meta{color:var(--muted);font-size:0.95rem}
+    .section{margin-top:1rem}
+    h1{
+      opacity:0;
+      animation:fadeInUp 0.6s ease 0.2s forwards;
+      font-size:2.5rem;
+      font-weight:700;
+      margin:0 0 1.5rem;
+      color:var(--text-primary);
+      letter-spacing:-0.02em;
+    }
+    @keyframes fadeInUp{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    .brand{
+      font-weight:700;
+      cursor:pointer;
+      transition:transform 0.2s ease;
+      font-size:1.25rem;
+      letter-spacing:0.02em;
+      text-shadow:0 2px 4px rgba(0,0,0,0.1);
+    }
+    .brand:hover{
+      transform:scale(1.05);
+      text-shadow:0 2px 8px rgba(0,0,0,0.2);
+    }
+    @media (max-width:1100px){
+      .resume-grid{grid-template-columns:1fr;}
+      /* on smaller screens use a relative viewport height and remove max-width so it fills the column */
+      .pdf-viewer iframe{height:60vh;max-width:100%}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div style="font-weight:700">Sloane Hennen</div>
+      <ul>
+        <li><a href="career.html">Career Intrests</a></li>
+        <li><a href="discover.html">Discover</a></li>
+        <li><a href="hobbies.html">Hobbies</a></li>
+        <li><a href="game.html">Game</a></li>
+        <li><a href="resume.html">Resume</a></li>
+      </ul>
+    </nav>
+  </header>
+
+   <main>
+    <div class="card">
+      <h1>Resume</h1>
+
+      <div class="resume-grid">
+        <div class="resume-section">
+   
+          <p>Hello! I'm Sloane Hennen, a Marketing and Management double major at the University of Minnesota Duluth. <p></p>
+          <p>Feel free to download my resume below or view it alongside this section.</p>
+          <a class="download-btn" href="media/SloaneHennen_Resume.pdf" download>Download Resume (PDF)</a>
+        </div>
+        <div class="pdf-viewer">
+          <iframe src="media/resume/shresume.pdf"></iframe>
+        </div>
+
+       <p><a class="back-btn" href="index.html">Back to Home</a></p>
+      </div>
+    </div>
+  </main>
+  <script>
+    // Add active state to navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop() || 'resume.html';
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+          link.style.background = 'rgba(255,255,255,0.2)';
+          link.style.fontWeight = '600';
+        }
+      });
+      
+      const brand = document.querySelector('.brand') || document.querySelector('[style*="font-weight:700"]');
+      if (brand) {
+        brand.style.cursor = 'pointer';
+        brand.addEventListener('click', function() {
+          window.location.href = 'index.html';
+        });
+      }
+      
+      // Add click animation to download button
+      const downloadBtn = document.querySelector('.download-btn');
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', function(e) {
+          // Create ripple effect
+          const ripple = document.createElement('span');
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.width = ripple.style.height = size + 'px';
+          ripple.style.left = x + 'px';
+          ripple.style.top = y + 'px';
+          ripple.classList.add('ripple');
+          
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

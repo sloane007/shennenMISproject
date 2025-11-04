@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>Personal Website - Home</title>
+ <style>
+   :root{
+     --nav-bg:#3b6b56;
+     --accent:#c07a4b;
+     --accent-light:#d68a60;
+     --accent-dark:#a8693a;
+     --muted:#6b6b57;
+     --page-bg:#f6f3ee;
+     --card-bg:#fffdf9;
+     --text-primary:#2b2b26;
+     --text-secondary:#4a4a45;
+     --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+     --shadow-md:0 6px 20px rgba(0,0,0,0.12);
+     --shadow-lg:0 12px 32px rgba(0,0,0,0.16);
+   }
+   *{box-sizing:border-box}
+   html{scroll-behavior:smooth}
+   body{
+     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+     margin:0;
+     color:var(--text-primary);
+     line-height:1.7;
+     letter-spacing:0.01em;
+     background:linear-gradient(135deg, #f6f3ee 0%, #f0ebe4 100%);
+     min-height:100vh;
+   }
+   header{
+     background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
+     color:#fff;
+     padding:1rem 1.5rem;
+     position:sticky;
+     top:0;
+     z-index:100;
+     box-shadow:var(--shadow-md);
+     backdrop-filter:blur(10px);
+     border-bottom:1px solid rgba(255,255,255,0.1);
+   }
+   nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+   .nav-left{display:flex;gap:1rem;align-items:center}
+   .brand{
+     font-weight:700;
+     font-size:1.25rem;
+     cursor:pointer;
+     transition:all 0.3s ease;
+     letter-spacing:0.02em;
+     text-shadow:0 2px 4px rgba(0,0,0,0.1);
+   }
+   .brand:hover{transform:scale(1.05);text-shadow:0 2px 8px rgba(0,0,0,0.2)}
+   ul.nav{list-style:none;display:flex;gap:0.5rem;margin:0;padding:0}
+   ul.nav a{
+     color:#fff;
+     text-decoration:none;
+     padding:0.6rem 1rem;
+     border-radius:8px;
+     transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+     position:relative;
+     font-weight:500;
+     letter-spacing:0.01em;
+   }
+   ul.nav a:hover{
+     background:rgba(255,255,255,0.2);
+     transform:translateY(-2px);
+     box-shadow:0 4px 12px rgba(0,0,0,0.15);
+   }
+   ul.nav a::after{
+     content:'';
+     position:absolute;
+     bottom:0;
+     left:50%;
+     width:0;
+     height:3px;
+     background:linear-gradient(90deg, transparent, #fff, transparent);
+     transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+     transform:translateX(-50%);
+     border-radius:2px;
+   }
+   ul.nav a:hover::after{width:70%}
+   main{max-width:1100px;margin:3rem auto;padding:0 1.5rem}
+   .hero{
+     display:flex;
+     gap:2rem;
+     align-items:center;
+     opacity:0;
+     animation:fadeInUp 0.8s ease forwards;
+     margin-bottom:3rem;
+   }
+   .hero img{
+     width:160px;
+     height:160px;
+     border-radius:50%;
+     object-fit:cover;
+     transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+     cursor:pointer;
+     border:4px solid #fff;
+     box-shadow:var(--shadow-lg);
+   }
+   .hero img:hover{
+     transform:scale(1.08) rotate(5deg);
+     box-shadow:0 16px 40px rgba(192,122,75,0.3);
+     border-color:var(--accent);
+   }
+ .card{
+   background:var(--card-bg);
+   border-radius:16px;
+   padding:2rem;
+   box-shadow:var(--shadow-sm);
+   transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+   opacity:0;
+   transform:translateY(20px);
+   animation:fadeInUp 0.6s ease forwards;
+   border:1px solid rgba(59,107,86,0.08);
+   margin-bottom:2rem;
+ }
+ .card:nth-child(1){animation-delay:0.1s}
+ .card:nth-child(2){animation-delay:0.2s}
+ .card:nth-child(3){animation-delay:0.3s}
+ .card:hover{
+   transform:translateY(-8px);
+   box-shadow:var(--shadow-lg);
+   border-color:rgba(192,122,75,0.2);
+ }
+ .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+ .video-wrapper{
+   position:relative;
+   padding-top:56.25%;
+   background:#000;
+   border-radius:12px;
+   overflow:hidden;
+   transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+   box-shadow:var(--shadow-md);
+ }
+ .video-wrapper:hover{
+   transform:scale(1.02);
+   box-shadow:var(--shadow-lg);
+ }
+ .video-wrapper iframe, .video-wrapper video{
+   position:absolute;
+   top:0;
+   left:0;
+   width:100%;
+   height:100%;
+   transition:opacity 0.3s ease;
+ }
+ .video-wrapper:hover iframe{opacity:0.95}
+ @media (max-width:900px){.two-col{grid-template-columns:1fr}}
+ .hobby-grid{display:grid;gap:1.5rem}
+ .hobby-item{
+   display:flex;
+   gap:1.5rem;
+   align-items:flex-start;
+   transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+   padding:1.5rem;
+   border-radius:12px;
+   cursor:pointer;
+   background:rgba(255,255,255,0.5);
+   border:1px solid rgba(59,107,86,0.1);
+ }
+ .hobby-item:hover{
+   background:rgba(59,107,86,0.08);
+   transform:translateX(8px);
+   box-shadow:var(--shadow-md);
+   border-color:rgba(192,122,75,0.3);
+ }
+ .hobby-img{
+   width:160px;
+   height:120px;
+   object-fit:cover;
+   border-radius:12px;
+   transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+   box-shadow:var(--shadow-sm);
+ }
+ .hobby-item:hover .hobby-img{
+   transform:scale(1.08);
+   box-shadow:var(--shadow-lg);
+ }
+ @media (max-width:700px){
+   .hobby-item{flex-direction:column}
+   .hobby-img{width:100%;height:auto}
+ }
+   footer{
+     max-width:1100px;
+     margin:4rem auto 2rem;
+     padding:2rem 1rem;
+     color:var(--muted);
+     text-align:center;
+     opacity:0;
+     animation:fadeIn 0.8s ease 0.5s forwards;
+     font-size:0.9rem;
+   }
+   @media (max-width:700px){.hero{flex-direction:column;text-align:center}}
+   @keyframes fadeInUp{
+     from{opacity:0;transform:translateY(30px)}
+     to{opacity:1;transform:translateY(0)}
+   }
+   @keyframes fadeIn{
+     from{opacity:0}
+     to{opacity:1}
+   }
+   h1{
+     font-size:2.5rem;
+     font-weight:700;
+     margin:0 0 1rem;
+     color:var(--text-primary);
+     letter-spacing:-0.02em;
+     line-height:1.2;
+   }
+   h2{
+     font-size:1.75rem;
+     font-weight:600;
+     margin:0 0 1rem;
+     color:var(--text-primary);
+     transition:color 0.3s ease;
+     letter-spacing:-0.01em;
+   }
+   .card:hover h2{
+     color:var(--accent);
+   }
+   h3{
+     font-size:1.25rem;
+     font-weight:600;
+     margin:0 0 0.75rem;
+     color:var(--text-primary);
+     transition:color 0.3s ease;
+   }
+   .hobby-item:hover h3{color:var(--nav-bg)}
+   p{
+     color:var(--text-secondary);
+     margin:0 0 1rem;
+     font-size:1.05rem;
+     line-height:1.7;
+   }
+ </style>
+
+</head>
+<body>
+ <header>
+   <nav>
+       <div class="brand">Sloane Hennen</div>
+       <ul class="nav">
+       <li><a href="career.html">Career Intrests</a></li>
+       <li><a href="discover.html">Discover</a></li>
+       <li><a href="hobbies.html">Hobbies</a></li>
+       <li><a href="game.html">Game</a></li>
+       <li><a href="resume.html">Resume</a></li>
+       </ul>
+     </div>
+   </nav>
+ </header>
+
+
+ <main>
+   <section class="hero">
+     <img src="media/images/homepage/Headshot.png" alt="Headshot">
+     <div>
+ <h1 class="card">Sloane Hennen's personal website</h1>
+     </div>
+   </section>
+
+
+   <section style="margin-top:1.5rem" class="card">
+     <h2>Introduction and Overview</h2>
+     <p>Hello, my name is Sloane Hennen, and I am from Minneapolis, Minnesota. I’m a first-year student at the University of Minnesota Duluth, pursuing a bachelor’s degree in both Marketing and Management, with the intention to graduate in Fall 2027. Within this website, you will find some of the projects I have worked on, both independently and as part of a group, throughout my MIS course, as well as learn a little more about me. Some things, like my hobbies, resume, and why I picked UMD, will all be included. As well as my group’s University of Minnesota Duluth marketing video and interactive game.</p>
+   </section>
+
+
+   <section style="margin-top:1.25rem" class="card">
+     <h2>Welcome Video</Video></h2>
+     <div class="video-wrapper">
+       <!-- Replace the src with your video URL or use a hosted MP4 -->
+       <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Welcome video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+     </div>
+   </section>
+
+
+   <section style="margin-top:1.25rem" class="card">
+     <h2>Brief Hobbies</h2>
+     <div class="hobby-grid">
+       <div class="hobby-item">
+         <img src="media/images/homepage/HobbyImage1.JPG" alt="Track and Field" class="hobby-img">
+         <div>
+           <h3>Track and Field</h3>
+           <p>Since my freshman year of high school, I have been a thrower in track and field. I competed in both shot put and discus for those 4 years on varsity. When I came to UMD this year, I stayed committed to the sport and joined the women’s track team.</p>
+         </div>
+       </div>
+
+
+       <div class="hobby-item">
+         <img src="media/images/homepage/HobbyImage2.JPG" alt="Volunteering" class="hobby-img">
+         <div>
+           <h3>Volunteering</h3>
+           <p>One thing that I love to do is volunteer! This passion/hobby of mine really took off at the end of 2023 when I took on a huge project at the Scott Carver Threshers in Jordan, MN.</p>
+         </div>
+       </div>
+     </div>
+   </section>
+
+
+  
+ </main>
+
+
+ <footer>
+   &copy; 2025 Sloane Hennen
+ </footer>
+ <script>
+   // Add active state to navigation
+   document.addEventListener('DOMContentLoaded', function() {
+     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+     const navLinks = document.querySelectorAll('.nav a');
+     navLinks.forEach(link => {
+       if (link.getAttribute('href') === currentPage) {
+         link.style.background = 'rgba(255,255,255,0.2)';
+         link.style.fontWeight = '600';
+       }
+     });
+     
+     // Add click animation to brand
+     const brand = document.querySelector('.brand');
+     if (brand) {
+       brand.addEventListener('click', function() {
+         window.location.href = 'index.html';
+       });
+     }
+     
+     // Intersection Observer for scroll animations
+     const observerOptions = {
+       threshold: 0.1,
+       rootMargin: '0px 0px -50px 0px'
+     };
+     
+     const observer = new IntersectionObserver(function(entries) {
+       entries.forEach(entry => {
+         if (entry.isIntersecting) {
+           entry.target.style.opacity = '1';
+           entry.target.style.transform = 'translateY(0)';
+         }
+       });
+     }, observerOptions);
+     
+     // Observe all cards
+     document.querySelectorAll('.card').forEach(card => {
+       observer.observe(card);
+     });
+   });
+ </script>
+</body>
+</html>

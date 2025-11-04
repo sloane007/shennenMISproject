@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Interactive Game</title>
+  <style>
+    :root{
+      --nav-bg:#3b6b56;
+      --accent:#c07a4b;
+      --accent-light:#d68a60;
+      --accent-dark:#a8693a;
+      --muted:#6b6b57;
+      --page-bg:#f6f3ee;
+      --card-bg:#fffdf9;
+      --text-primary:#2b2b26;
+      --text-secondary:#4a4a45;
+      --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:0 6px 20px rgba(0,0,0,0.12);
+      --shadow-lg:0 12px 32px rgba(0,0,0,0.16);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      margin:0;
+      padding:0;
+      background:linear-gradient(135deg, #f6f3ee 0%, #f0ebe4 100%);
+      color:var(--text-primary);
+      line-height:1.7;
+      letter-spacing:0.01em;
+      min-height:100vh;
+    }
+    header{
+      background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
+      color:#fff;
+      padding:1rem 1.5rem;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:var(--shadow-md);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    ul{list-style:none;display:flex;gap:0.5rem;margin:0;padding:0}
+    a{
+      color:#fff;
+      text-decoration:none;
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+      padding:0.6rem 1rem;
+      border-radius:8px;
+      display:inline-block;
+      font-weight:500;
+    }
+    a:hover{
+      background:rgba(255,255,255,0.2);
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    main{max-width:1100px;margin:3rem auto;padding:0 1.5rem}
+  .card{
+    background:var(--card-bg);
+    padding:2.5rem;
+    border-radius:16px;
+    box-shadow:var(--shadow-sm);
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    opacity:0;
+    animation:fadeInUp 0.6s ease forwards;
+    border:1px solid rgba(59,107,86,0.08);
+  }
+  .card:hover{
+    transform:translateY(-5px);
+    box-shadow:var(--shadow-lg);
+    border-color:rgba(192,122,75,0.2);
+  }
+  .back-btn{
+    display:inline-block;
+    padding:0.75rem 1.5rem;
+    background:linear-gradient(135deg, var(--text-primary) 0%, #1a1a16 100%);
+    color:#fff;
+    border-radius:10px;
+    text-decoration:none;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    margin-top:1.5rem;
+    font-weight:600;
+    box-shadow:var(--shadow-sm);
+  }
+  .back-btn:hover{
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    transform:translateX(-5px);
+    box-shadow:var(--shadow-md);
+  }
+  .game-wrap{
+    position:relative;
+    margin:2rem 0;
+    display:flex;
+    justify-content:center;
+  }
+  canvas#unicornGame{
+    width:100%;
+    max-width:800px;
+    height:500px;
+    display:block;
+    background:linear-gradient(180deg,#f5e6ff 0%, #fbf7ff 60%, #ffffff 100%);
+    border-radius:16px;
+    border:4px solid var(--accent);
+    box-shadow:var(--shadow-lg);
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  canvas#unicornGame:hover{
+    box-shadow:0 16px 48px rgba(192,122,75,0.3);
+    transform:scale(1.01);
+  }
+  .hud{
+    position:absolute;
+    left:20px;
+    top:15px;
+    color:#6b00a4;
+    font-weight:700;
+    text-shadow:0 2px 4px rgba(255,255,255,0.8);
+    font-size:20px;
+    z-index:10;
+    background:rgba(255,255,255,0.7);
+    padding:0.5rem 1rem;
+    border-radius:10px;
+    backdrop-filter:blur(10px);
+  }
+  .overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    color:#9400a4;
+    background:rgba(255,255,255,0.97);
+    backdrop-filter:blur(10px);
+    border-radius:16px;
+    z-index:20;
+    box-shadow:0 8px 32px rgba(0,0,0,0.1);
+  }
+  .overlay h2{
+    margin:0 0 1.5rem;
+    font-size:2.5rem;
+    font-weight:700;
+    text-shadow:0 2px 8px rgba(164,0,107,0.2);
+  }
+  .btn{
+    margin-top:12px;
+    padding:0.875rem 2rem;
+    border-radius:12px;
+    background:linear-gradient(135deg, #ff69b4 0%, #c814ff 100%);
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    font-size:1.1rem;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:0 4px 16px rgba(255,105,180,0.3);
+    letter-spacing:0.02em;
+  }
+  .btn:hover{
+    background:linear-gradient(135deg, #ff1493 0%, #d81b60 100%);
+    transform:scale(1.08) translateY(-2px);
+    box-shadow:0 8px 24px rgba(255,105,180,0.5);
+  }
+  .btn:active{
+    transform:scale(0.98) translateY(0);
+  }
+  .game-controls{
+    display:flex;
+    gap:1rem;
+    margin:1.5rem 0;
+    flex-wrap:wrap;
+  }
+  .game-controls button{
+    flex:1;
+    min-width:140px;
+  }
+  .instructions{
+    background:linear-gradient(135deg, #fff 0%, #fafafa 100%);
+    padding:1.5rem;
+    border-radius:14px;
+    margin-bottom:1.5rem;
+    border-left:5px solid var(--accent);
+    box-shadow:var(--shadow-sm);
+  }
+  .instructions h3{
+    margin-top:0;
+    color:var(--accent);
+    font-size:1.25rem;
+    font-weight:600;
+  }
+  .instructions p{
+    color:var(--text-secondary);
+    margin:0.5rem 0 0;
+    line-height:1.7;
+  }
+  h1{
+    opacity:0;
+    animation:fadeInUp 0.6s ease 0.2s forwards;
+    font-size:2.5rem;
+    font-weight:700;
+    margin:0 0 1.5rem;
+    color:var(--text-primary);
+    letter-spacing:-0.02em;
+  }
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .brand{
+    font-weight:700;
+    cursor:pointer;
+    transition:transform 0.2s ease;
+    font-size:1.25rem;
+    letter-spacing:0.02em;
+    text-shadow:0 2px 4px rgba(0,0,0,0.1);
+  }
+  .brand:hover{
+    transform:scale(1.05);
+    text-shadow:0 2px 8px rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div style="font-weight:700">Sloane Hennen</div>
+      <ul>
+        <li><a href="career.html">Career Intrests</a></li>
+        <li><a href="discover.html">Discover</a></li>
+        <li><a href="hobbies.html">Hobbies</a></li>
+        <li><a href="game.html">Game</a></li>
+        <li><a href="resume.html">Resume</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="card">
+      <h1>Interactive Game</h1>
+      <div class="instructions">
+        <h3>How to Play</h3>
+        <p>Click anywhere on the canvas to make the unicorn jump! Avoid the obstacles and collect stars to score points. Use arrow keys or WASD to move left and right. The game gets faster as you progress!</p>
+      </div>
+      <div class="game-wrap">
+        <div class="hud" id="hud">Score: 0 | Lives: 3</div>
+        <div class="overlay" id="gameOverlay">
+          <h2>Unicorn Runner</h2>
+          <button class="btn" onclick="startGame()">Start Game</button>
+        </div>
+        <canvas id="unicornGame" width="800" height="500"></canvas>
+      </div>
+      <div class="game-controls">
+        <button class="btn" onclick="startGame()">Restart</button>
+        <button class="btn" onclick="pauseGame()">Pause</button>
+      </div>
+      <p><a class="back-btn" href="index.html">Back to Home</a></p>
+    </div>
+  </main>
+  
+  <script>
+    const canvas = document.getElementById('unicornGame');
+    const ctx = canvas.getContext('2d');
+    const hud = document.getElementById('hud');
+    const overlay = document.getElementById('gameOverlay');
+    
+    let gameState = 'menu'; // menu, playing, paused, gameOver
+    let score = 0;
+    let lives = 3;
+    let gameSpeed = 2;
+    
+    // Game objects
+    let unicorn = {
+      x: 100,
+      y: 300,
+      width: 40,
+      height: 40,
+      velocityY: 0,
+      onGround: false,
+      color: '#FF69B4'
+    };
+    
+    let obstacles = [];
+    let stars = [];
+    let particles = [];
+    
+    // Game loop
+    function gameLoop() {
+      if (gameState !== 'playing') return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw background gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#ffe6f7');
+      gradient.addColorStop(0.6, '#fff7fb');
+      gradient.addColorStop(1, '#ffffff');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw unicorn
+      updateUnicorn();
+      drawUnicorn();
+      
+      // Update and draw obstacles
+      updateObstacles();
+      drawObstacles();
+      
+      // Update and draw stars
+      updateStars();
+      drawStars();
+      
+      // Update and draw particles
+      updateParticles();
+      drawParticles();
+      
+      // Spawn obstacles
+      if (Math.random() < 0.02) {
+        spawnObstacle();
+      }
+      
+      // Spawn stars
+      if (Math.random() < 0.01) {
+        spawnStar();
+      }
+      
+      // Update HUD
+      hud.textContent = `Score: ${score} | Lives: ${lives}`;
+      
+      // Check game over
+      if (lives <= 0) {
+        gameOver();
+      }
+      
+      requestAnimationFrame(gameLoop);
+    }
+    
+    function updateUnicorn() {
+      // Gravity
+      unicorn.velocityY += 0.5;
+      unicorn.y += unicorn.velocityY;
+      
+      // Ground collision
+      if (unicorn.y + unicorn.height > canvas.height - 50) {
+        unicorn.y = canvas.height - 50 - unicorn.height;
+        unicorn.velocityY = 0;
+        unicorn.onGround = true;
+      } else {
+        unicorn.onGround = false;
+      }
+    }
+    
+    function drawUnicorn() {
+      ctx.save();
+      ctx.translate(unicorn.x + unicorn.width/2, unicorn.y + unicorn.height/2);
+      
+      // Draw unicorn body
+      ctx.fillStyle = unicorn.color;
+      ctx.beginPath();
+      ctx.arc(0, 0, unicorn.width/2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Draw horn
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath();
+      ctx.moveTo(0, -unicorn.height/2);
+      ctx.lineTo(-5, -unicorn.height/2 - 15);
+      ctx.lineTo(5, -unicorn.height/2 - 15);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Draw eye
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(-5, -5, 3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore();
+    }
+    
+    function spawnObstacle() {
+      obstacles.push({
+        x: canvas.width,
+        y: canvas.height - 50 - 30,
+        width: 30,
+        height: 30,
+        color: '#8B4513'
+      });
+    }
+    
+    function updateObstacles() {
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obs = obstacles[i];
+        obs.x -= gameSpeed;
+        
+        // Collision detection
+        if (unicorn.x < obs.x + obs.width &&
+            unicorn.x + unicorn.width > obs.x &&
+            unicorn.y < obs.y + obs.height &&
+            unicorn.y + unicorn.height > obs.y) {
+          obstacles.splice(i, 1);
+          lives--;
+          createParticles(unicorn.x + unicorn.width/2, unicorn.y + unicorn.height/2);
+        } else if (obs.x + obs.width < 0) {
+          obstacles.splice(i, 1);
+          score += 10;
+        }
+      }
+    }
+    
+    function drawObstacles() {
+      obstacles.forEach(obs => {
+        ctx.fillStyle = obs.color;
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      });
+    }
+    
+    function spawnStar() {
+      stars.push({
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 100) + 50,
+        radius: 10,
+        rotation: 0,
+        color: '#FFD700'
+      });
+    }
+    
+    function updateStars() {
+      for (let i = stars.length - 1; i >= 0; i--) {
+        const star = stars[i];
+        star.x -= gameSpeed;
+        star.rotation += 0.1;
+        
+        // Collision detection
+        const dx = (unicorn.x + unicorn.width/2) - star.x;
+        const dy = (unicorn.y + unicorn.height/2) - star.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < unicorn.width/2 + star.radius) {
+          stars.splice(i, 1);
+          score += 50;
+          createParticles(star.x, star.y, '#FFD700');
+        } else if (star.x + star.radius < 0) {
+          stars.splice(i, 1);
+        }
+      }
+    }
+    
+    function drawStars() {
+      stars.forEach(star => {
+        ctx.save();
+        ctx.translate(star.x, star.y);
+        ctx.rotate(star.rotation);
+        ctx.fillStyle = star.color;
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const angle = (i * 4 * Math.PI / 5) - Math.PI / 2;
+          const x = Math.cos(angle) * star.radius;
+          const y = Math.sin(angle) * star.radius;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+    
+    function createParticles(x, y, color = '#FF69B4') {
+      for (let i = 0; i < 10; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          life: 30,
+          color: color
+        });
+      }
+    }
+    
+    function updateParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+    
+    function drawParticles() {
+      particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life / 30;
+        ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+      });
+      ctx.globalAlpha = 1;
+    }
+    
+    // Controls
+    canvas.addEventListener('click', () => {
+      if (gameState === 'playing' && unicorn.onGround) {
+        unicorn.velocityY = -12;
+      }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (gameState === 'playing') {
+        if ((e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && unicorn.onGround) {
+          unicorn.velocityY = -12;
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+          unicorn.x = Math.max(0, unicorn.x - 5);
+        }
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+          unicorn.x = Math.min(canvas.width - unicorn.width, unicorn.x + 5);
+        }
+      }
+    });
+    
+    function startGame() {
+      gameState = 'playing';
+      score = 0;
+      lives = 3;
+      gameSpeed = 2;
+      unicorn.x = 100;
+      unicorn.y = 300;
+      unicorn.velocityY = 0;
+      obstacles = [];
+      stars = [];
+      particles = [];
+      overlay.style.display = 'none';
+      gameLoop();
+    }
+    
+    function pauseGame() {
+      if (gameState === 'playing') {
+        gameState = 'paused';
+        overlay.style.display = 'flex';
+        overlay.querySelector('h2').textContent = '⏸️ Paused';
+        overlay.querySelector('.btn').textContent = 'Resume';
+        overlay.querySelector('.btn').onclick = resumeGame;
+      }
+    }
+    
+    function resumeGame() {
+      gameState = 'playing';
+      overlay.style.display = 'none';
+      gameLoop();
+    }
+    
+    function gameOver() {
+      gameState = 'gameOver';
+      overlay.style.display = 'flex';
+      overlay.querySelector('h2').textContent = `🎮 Game Over! Score: ${score}`;
+      overlay.querySelector('.btn').textContent = 'Play Again';
+      overlay.querySelector('.btn').onclick = startGame;
+    }
+    
+    // Add active state to navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop() || 'game.html';
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+          link.style.background = 'rgba(255,255,255,0.2)';
+          link.style.fontWeight = '600';
+        }
+      });
+      
+      const brand = document.querySelector('.brand') || document.querySelector('[style*="font-weight:700"]');
+      if (brand) {
+        brand.style.cursor = 'pointer';
+        brand.addEventListener('click', function() {
+          window.location.href = 'index.html';
+        });
+      }
+    });
+  </script>
+ </body>
+</html>

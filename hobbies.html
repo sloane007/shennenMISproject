@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hobbies</title>
+  <style>
+    :root{
+      --nav-bg:#3b6b56;
+      --accent:#c07a4b;
+      --accent-light:#d68a60;
+      --accent-dark:#a8693a;
+      --muted:#6b6b57;
+      --page-bg:#f6f3ee;
+      --card-bg:#fffdf9;
+      --text-primary:#2b2b26;
+      --text-secondary:#4a4a45;
+      --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:0 6px 20px rgba(0,0,0,0.12);
+      --shadow-lg:0 12px 32px rgba(0,0,0,0.16);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      margin:0;
+      padding:0;
+      background:linear-gradient(135deg, #f6f3ee 0%, #f0ebe4 100%);
+      color:var(--text-primary);
+      line-height:1.7;
+      letter-spacing:0.01em;
+      min-height:100vh;
+    }
+    header{
+      background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
+      color:#fff;
+      padding:1rem 1.5rem;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:var(--shadow-md);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    ul{list-style:none;display:flex;gap:0.5rem;margin:0;padding:0}
+    a{
+      color:#fff;
+      text-decoration:none;
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+      padding:0.6rem 1rem;
+      border-radius:8px;
+      display:inline-block;
+      font-weight:500;
+    }
+    a:hover{
+      background:rgba(255,255,255,0.2);
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    main{max-width:1100px;margin:3rem auto;padding:0 1.5rem}
+  .card{
+    background:var(--card-bg);
+    padding:2.5rem;
+    border-radius:16px;
+    box-shadow:var(--shadow-sm);
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    opacity:0;
+    animation:fadeInUp 0.6s ease forwards;
+    border:1px solid rgba(59,107,86,0.08);
+  }
+  .card:hover{
+    transform:translateY(-5px);
+    box-shadow:var(--shadow-lg);
+    border-color:rgba(192,122,75,0.2);
+  }
+  .back-btn{
+    display:inline-block;
+    padding:0.75rem 1.5rem;
+    background:linear-gradient(135deg, var(--text-primary) 0%, #1a1a16 100%);
+    color:#fff;
+    border-radius:10px;
+    text-decoration:none;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    margin-top:1.5rem;
+    font-weight:600;
+    box-shadow:var(--shadow-sm);
+  }
+  .back-btn:hover{
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    transform:translateX(-5px);
+    box-shadow:var(--shadow-md);
+  }
+  h1{
+    opacity:0;
+    animation:fadeInUp 0.6s ease 0.2s forwards;
+    font-size:2.5rem;
+    font-weight:700;
+    margin:0 0 1.5rem;
+    color:var(--text-primary);
+    letter-spacing:-0.02em;
+  }
+  h3{
+    transition:color 0.3s ease;
+    font-size:1.5rem;
+    font-weight:600;
+    margin:2rem 0 1rem;
+    color:var(--text-primary);
+  }
+  .card:hover h3{color:var(--accent)}
+  p{
+    color:var(--text-secondary);
+    margin:0 0 1rem;
+    line-height:1.7;
+    font-size:1.05rem;
+  }
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .brand{
+    font-weight:700;
+    cursor:pointer;
+    transition:transform 0.2s ease;
+    font-size:1.25rem;
+    letter-spacing:0.02em;
+    text-shadow:0 2px 4px rgba(0,0,0,0.1);
+  }
+  .brand:hover{
+    transform:scale(1.05);
+    text-shadow:0 2px 8px rgba(0,0,0,0.2);
+  }
+  .filters{display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.75rem 0 1rem}
+  .filter-btn{padding:0.4rem 0.7rem;border-radius:20px;border:1px solid #caa;cursor:pointer;background:#fff}
+  .filter-btn.active{background:#3b6b56;color:#fff;border-color:#3b6b56}
+  .track-images{display:flex;gap:1.5rem;margin:1rem 0}
+  .track-images figure{flex:1;margin:0}
+  .track-images img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    border-radius:12px;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    cursor:pointer;
+    box-shadow:var(--shadow-sm);
+  }
+  .track-images img:hover{
+    transform:translateY(-5px) scale(1.05);
+    box-shadow:var(--shadow-lg);
+  }
+  .track-caption{font-size:0.9rem;color:var(--muted);margin-top:0.35rem}
+  .baking-images{display:flex;gap:1rem;margin:0.75rem 0}
+  .baking-images figure{flex:1;margin:0}
+  .baking-images img,.scta-images img,.outside-images img,.barrel-images img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    border-radius:12px;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    cursor:pointer;
+    box-shadow:var(--shadow-sm);
+  }
+  .baking-images img:hover,.scta-images img:hover,.outside-images img:hover,.barrel-images img:hover{
+    transform:translateY(-5px) scale(1.05);
+    box-shadow:var(--shadow-lg);
+  }
+  .baking-caption,.scta-caption,.outside-caption,.barrel-caption{
+    font-size:0.9rem;
+    color:var(--muted);
+    margin-top:0.5rem;
+  }
+  .scta-images,.outside-images,.barrel-images{
+    display:flex;
+    gap:1.5rem;
+    margin:1rem 0;
+  }
+  .scta-images figure,.outside-images figure,.barrel-images figure{
+    flex:1;
+    margin:0;
+  }
+  .barrel-caption{font-size:0.9rem;color:var(--muted);margin-top:0.35rem}
+  .hidden{display:none !important}
+  .hobby-section{opacity:1;transform:none}
+  /* Lightbox */
+  .lb-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(8px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+  }
+  .lb-backdrop.active{display:flex}
+  .lb-content{position:relative;max-width:90vw;max-height:85vh}
+  .lb-img{
+    max-width:90vw;
+    max-height:70vh;
+    border-radius:16px;
+    box-shadow:0 24px 64px rgba(0,0,0,0.5);
+    background:#000;
+  }
+  .lb-caption{
+    margin-top:1rem;
+    color:#fff;
+    text-align:center;
+    font-size:1.1rem;
+    font-weight:500;
+  }
+  .lb-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(255,255,255,0.9);
+    border:none;
+    border-radius:50%;
+    width:48px;
+    height:48px;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:bold;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  }
+  .lb-btn:hover{
+    background:rgba(255,255,255,1);
+    transform:translateY(-50%) scale(1.15);
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  }
+  .lb-prev{left:-64px}
+  .lb-next{right:-64px}
+  .lb-close{
+    position:absolute;
+    top:-52px;
+    right:0;
+    background:rgba(255,255,255,0.9);
+    border:none;
+    border-radius:50%;
+    width:44px;
+    height:44px;
+    cursor:pointer;
+    font-size:22px;
+    font-weight:bold;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  }
+  .lb-close:hover{
+    background:rgba(255,255,255,1);
+    transform:scale(1.15);
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  }
+  @media (max-width:700px){
+    .track-images,.baking-images,.scta-images,.outside-images,.barrel-images{flex-direction:column}
+    .track-images img,.baking-images img,.scta-images img,.outside-images img,.barrel-images img{height:auto}
+    .lb-prev{left:6px}
+    .lb-next{right:6px}
+    .lb-close{top:6px;right:6px}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div style="font-weight:700">Sloane Hennen</div>
+      <ul>
+        <li><a href="career.html">Career Intrests</a></li>
+        <li><a href="discover.html">Discover</a></li>
+        <li><a href="hobbies.html">Hobbies</a></li>
+        <li><a href="game.html">Game</a></li>
+        <li><a href="resume.html">Resume</a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <main>
+    <div class="card">
+      <h1>Hobbies</h1>
+
+      <h3>1. Track and Field</h3>
+      <p>Since my freshman year of high school, I have been a thrower in track and field. I competed in both shot put and discus for those 4 years on varsity. When I came to UMD this year, I stayed committed to the sport and joined the women’s track team. Since being here, I have begun to learn about and how to do the additional throwing events, including hammer. Due to this hobby, I have also become dedicated to lifting to get stronger. Since the beginning of 2025, I really got into lifting and have been consistently lifting 3 times a week since then. It doesn’t matter if I am actively training with the team or lifting by myself during the summer, I have grown much fonder of the activity than I once was.</p>
+
+      <div class="track-images">
+        <figure>
+          <img src="media/images/hobbies/track1.PNG" alt="Sloane throwing shot put">
+        </figure>
+        <figure>
+          <img src="media/images/hobbies/track2.JPG" alt="Sloane throwing discus">
+        </figure>
+      </div>
+
+      <h3>2. Baking</h3>
+      <p>One of my favorite things to do when I am bored or just need a way to relax is to bake. Some things that I love to make are bread (sourdough, focaccia, or even just a plain white loaf), cookies, and cakes. If I ever want to do something for someone, my default is to spend some time in the kitchen baking them something that I know they like.</p>
+
+      <div class="baking-images">
+        <figure>
+          <img src="media/images/hobbies/Baking2.JPG" alt="bread">
+        </figure>
+        <figure>
+          <img src="media/images/hobbies/baking2.png" alt="cookies">
+        </figure>
+      </div>
+
+      <h3>3. SCTA (Scott Carver Threshers Association)</h3>
+      <p>One of the hobbies that I am most proud of is the amount of volunteering I do, especially at the Scott Carver Threshers in Jordan, MN. I have been a member of this non-profit since 2020. In 2023, I took on the role of head of the barn and livestock committee. Additionally, that year I was voted onto the board, which made me the youngest female board member in the club’s history. But regardless of those achievements, I have spent nearly 200 hours within the last 2 years working on repairing the old barnyard that had been only used for storage for over a decade. I recognized many safety hazards that would affect both animals and visitors. Addressing these issues was crucial to do before the barnyard could be reopened. In addition to this, I made many changes to the design of how things worked in order to make processes easier and more efficient. But, before I started any of this work, I had to get approval from the membership and a budget of $1000 to be granted. In August 2024, the barnyard was reopened for the first time in over 10 years for the 60th annual SCTA show, and it was a huge success! In August 2025, the same thing was repeated, but with even more animals! This hobby of mine has led to a lot of growth and development in me as a person. The last thing to add is that in October 2024, I was elected to be the club’s Secretary. Some of the biggest personal skills volunteering at STCA has helped me grow in are my problem-solving abilities, public speaking skills, as well as listening and note-taking skills.</p>
+
+      <div class="scta-images">
+        <figure>
+          <img src="media/images/hobbies/threshers.jpg" alt="SCTA barn exterior with open doors">
+        </figure>
+        <figure>
+          <img src="media/images/hobbies/Threshers2.JPG" alt="People leading ponies at the SCTA show">
+        </figure>
+      </div>
+
+      <h3>4. Being Outside</h3>
+      <p>Being outside is something that I love, no matter the season. In the winter, I ski with my family at places around Minnesota and occasionally in Colorado. In the spring, I am outside all the time due to track practice and meets. In the summer, I spend lots of time at the lake, parks, or even in the garden/yard. Finally, in the fall, I love to go for walks on trails and look at the surrounding landscapes.</p>
+
+      <div class="outside-images">
+        <figure>
+          <img src="media/images/hobbies/outside.JPG" alt="Sitting on a dock with a dog, looking over the lake">
+        </figure>
+        <figure>
+          <img src="media/images/hobbies/outside2.jpeg" alt="Holding an eel-like creature from a boat on the lake">
+        </figure>
+      </div>
+
+      <h3>5. Barrel Racing</h3>
+      <p>Though it is not an active hobby of mine at this moment, barrel racing will always be something that I have a passion for and plan to get back into. I think that it is just as important to have on this list as some of the other things for this reason. I grew up around horses and competing on them. I stopped regularly riding around 2022 when my 2 horses were put into partial retirement. Since then, I occasionally get to spend time with friends and ride, but I have not competed in over 3 years. Once I get the chance in the future and have the financial capacity to take on this commitment again, I plan to do so, and it is something that motivates me every day.</p>
+
+      <div class="barrel-images">
+        <figure>
+          <img src="media/images/hobbies/barrelracing1.JPG" alt="Barrel racing turn with horse kicking up dirt">
+        </figure>
+        <figure>
+          <img src="media/images/hobbies/barrelracing.jpg" alt="Rider leaning forward in barrel racing run">
+        </figure>
+      </div>
+
+      <p><a class="back-btn" href="index.html">Back to Home</a></p>
+    </div>
+  </main>
+  
+  <!-- Lightbox -->
+  <div class="lb-backdrop" id="lightbox">
+    <button class="lb-close" onclick="closeLightbox()">&times;</button>
+    <button class="lb-btn lb-prev" onclick="changeImage(-1)">&#8249;</button>
+    <div class="lb-content">
+      <img class="lb-img" id="lb-img" src="" alt="">
+      <div class="lb-caption" id="lb-caption"></div>
+    </div>
+    <button class="lb-btn lb-next" onclick="changeImage(1)">&#8250;</button>
+  </div>
+
+  <script>
+    let currentImageIndex = 0;
+    let images = [];
+    
+    // Collect all images with their alt text
+    document.addEventListener('DOMContentLoaded', function() {
+      const allImages = document.querySelectorAll('.track-images img, .baking-images img, .scta-images img, .outside-images img, .barrel-images img');
+      allImages.forEach((img, index) => {
+        images.push({
+          src: img.src,
+          alt: img.alt
+        });
+        img.addEventListener('click', () => openLightbox(index));
+      });
+      
+      // Add active state to navigation
+      const currentPage = window.location.pathname.split('/').pop() || 'hobbies.html';
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+          link.style.background = 'rgba(255,255,255,0.2)';
+          link.style.fontWeight = '600';
+        }
+      });
+      
+      const brand = document.querySelector('.brand') || document.querySelector('[style*="font-weight:700"]');
+      if (brand) {
+        brand.style.cursor = 'pointer';
+        brand.addEventListener('click', function() {
+          window.location.href = 'index.html';
+        });
+      }
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        const lightbox = document.getElementById('lightbox');
+        if (lightbox.classList.contains('active')) {
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') changeImage(-1);
+          if (e.key === 'ArrowRight') changeImage(1);
+        }
+      });
+    });
+    
+    function openLightbox(index) {
+      currentImageIndex = index;
+      const lightbox = document.getElementById('lightbox');
+      const img = document.getElementById('lb-img');
+      const caption = document.getElementById('lb-caption');
+      
+      img.src = images[index].src;
+      caption.textContent = images[index].alt;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    function changeImage(direction) {
+      currentImageIndex += direction;
+      if (currentImageIndex < 0) currentImageIndex = images.length - 1;
+      if (currentImageIndex >= images.length) currentImageIndex = 0;
+      
+      const img = document.getElementById('lb-img');
+      const caption = document.getElementById('lb-caption');
+      img.src = images[currentImageIndex].src;
+      caption.textContent = images[currentImageIndex].alt;
+    }
+    
+    // Close lightbox when clicking backdrop
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+  </script>
+</body>
+</html>
