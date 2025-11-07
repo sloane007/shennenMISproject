@@ -1,0 +1,82 @@
+/* Responsive base stylesheet for the site */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  color: #222;
+  line-height: 1.5;
+  background: #fff;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+header, nav, main, footer {
+  padding: 1rem 0;
+}
+/* Make images and videos scale down on small screens */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+/* Simple responsive nav */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.navbar a {
+  text-decoration: none;
+  color: inherit;
+}
+.resume-btn {
+  display: inline-block;
+  background: #007acc;
+  color: #fff;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+/* Utility spacing */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+/* Responsive typography */
+h1 { font-size: 1.8rem; margin: 0 0 0.5rem 0; }
+h2 { font-size: 1.4rem; margin: 0 0 0.5rem 0; }
+@media (min-width: 700px) {
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.6rem; }
+}
+/* Layout helpers */
+.row { display: flex; flex-wrap: wrap; gap: 1rem; }
+.col { flex: 1 1 200px; }
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .container { padding: 0 0.75rem; }
+  .navbar ul { width: 100%; flex-direction: column; gap: 0.5rem; }
+  .row { flex-direction: column; }
+}
+/* Small, subtle shadow for cards */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
