@@ -2,26 +2,59 @@
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   color: #222;
-  line-height: 1.5;
+  line-height: 1.6;
   background: #fff;
+  overflow-x: hidden;
 }
+
+/* Container with responsive padding */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
+
+@media (max-width: 768px) {
+  .container { padding: 0 1rem; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 0.75rem; }
+}
+
+/* Responsive header and nav */
 header, nav, main, footer {
   padding: 1rem 0;
 }
-/* Make images and videos scale down on small screens */
-img, video {
+
+/* Make all media responsive */
+img, video, iframe, canvas {
   max-width: 100%;
   height: auto;
   display: block;
 }
+
+/* Ensure embedded iframes maintain aspect ratio */
+.video-wrapper, .iframe-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+}
+
+.video-wrapper iframe,
+.video-wrapper video,
+.iframe-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 /* Simple responsive nav */
 .navbar {
   display: flex;
@@ -30,6 +63,7 @@ img, video {
   gap: 1rem;
   flex-wrap: wrap;
 }
+
 .navbar ul {
   list-style: none;
   margin: 0;
@@ -39,10 +73,29 @@ img, video {
   align-items: center;
   flex-wrap: wrap;
 }
+
 .navbar a {
   text-decoration: none;
   color: inherit;
+  padding: 0.5rem 0.75rem;
 }
+
+/* Mobile navigation */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .navbar ul {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+/* Resume button */
 .resume-btn {
   display: inline-block;
   background: #007acc;
@@ -51,32 +104,162 @@ img, video {
   border-radius: 6px;
   text-decoration: none;
   font-weight: 600;
+  transition: all 0.3s ease;
 }
+
+.resume-btn:hover {
+  background: #005a9c;
+  transform: translateY(-2px);
+}
+
 /* Utility spacing */
 .mt-1 { margin-top: 0.5rem; }
 .mt-2 { margin-top: 1rem; }
 .mb-1 { margin-bottom: 0.5rem; }
 .mb-2 { margin-bottom: 1rem; }
+
 /* Responsive typography */
-h1 { font-size: 1.8rem; margin: 0 0 0.5rem 0; }
-h2 { font-size: 1.4rem; margin: 0 0 0.5rem 0; }
-@media (min-width: 700px) {
+h1 { 
+  font-size: 1.75rem; 
+  margin: 0 0 0.75rem 0;
+  line-height: 1.2;
+}
+
+h2 { 
+  font-size: 1.4rem; 
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem 0;
+}
+
+@media (min-width: 768px) {
   h1 { font-size: 2.2rem; }
-  h2 { font-size: 1.6rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.4rem; }
 }
+
+@media (min-width: 1024px) {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+/* Responsive paragraphs */
+p {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  p { font-size: 1.05rem; }
+}
+
 /* Layout helpers */
-.row { display: flex; flex-wrap: wrap; gap: 1rem; }
-.col { flex: 1 1 200px; }
-/* Mobile tweaks */
-@media (max-width: 600px) {
-  .container { padding: 0 0.75rem; }
-  .navbar ul { width: 100%; flex-direction: column; gap: 0.5rem; }
-  .row { flex-direction: column; }
+.row { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 1rem; 
+  margin: 0 -0.5rem;
 }
-/* Small, subtle shadow for cards */
+
+.col { 
+  flex: 1 1 280px;
+  padding: 0 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .row { 
+    flex-direction: column;
+    margin: 0;
+  }
+  .col {
+    flex: 1 1 100%;
+    padding: 0;
+  }
+}
+
+/* Responsive cards */
 .card {
   background: #fff;
   border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .card { 
+    padding: 1rem;
+    border-radius: 6px;
+  }
+}
+
+/* Responsive tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  table {
+    font-size: 0.9rem;
+  }
+}
+
+/* Responsive buttons */
+button, .btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  button, .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Responsive grids */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 768px) {
+  .grid {
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Utility classes for responsive display */
+.mobile-only { display: none; }
+.desktop-only { display: block; }
+
+@media (max-width: 768px) {
+  .mobile-only { display: block; }
+  .desktop-only { display: none; }
+}
+
+/* Text alignment utilities */
+@media (max-width: 768px) {
+  .text-center-mobile { text-align: center; }
+}
+
+/* Responsive spacing utilities */
+@media (max-width: 768px) {
+  .mt-mobile { margin-top: 1rem; }
+  .mb-mobile { margin-bottom: 1rem; }
 }

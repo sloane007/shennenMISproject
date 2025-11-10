@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://w.soundcloud.com/player/api.js"></script>
   <title>Interactive Game</title>
   <style>
     :root{
@@ -92,79 +93,110 @@
     transform:translateX(-5px);
     box-shadow:var(--shadow-md);
   }
-  .game-wrap{
-    position:relative;
-    margin:2rem 0;
+  .mode-selector{
     display:flex;
+    gap:1rem;
     justify-content:center;
+    margin:2rem 0 1.5rem;
+    flex-wrap:wrap;
   }
-  canvas#unicornGame{
-    width:100%;
-    max-width:800px;
-    height:500px;
-    display:block;
-    background:linear-gradient(180deg,#f5e6ff 0%, #fbf7ff 60%, #ffffff 100%);
+  .mode-btn{
+    flex:1;
+    min-width:160px;
+    max-width:220px;
+    background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
+  }
+  .mode-btn.active{
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    box-shadow:0 6px 20px rgba(192,122,75,0.4);
+  }
+  .mode-btn:hover{
+    background:linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+  }
+  .game-status{
+    text-align:center;
+    margin:1.5rem 0;
+  }
+  .game-status h2{
+    font-size:1.75rem;
+    color:var(--accent);
+    margin:0;
+    transition:all 0.3s ease;
+  }
+  .game-board{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:12px;
+    max-width:400px;
+    margin:2rem auto;
+    padding:1rem;
+    background:linear-gradient(135deg, #fff 0%, #fafafa 100%);
     border-radius:16px;
-    border:4px solid var(--accent);
-    box-shadow:var(--shadow-lg);
-    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:var(--shadow-md);
   }
-  canvas#unicornGame:hover{
-    box-shadow:0 16px 48px rgba(192,122,75,0.3);
-    transform:scale(1.01);
-  }
-  .hud{
-    position:absolute;
-    left:20px;
-    top:15px;
-    color:#6b00a4;
-    font-weight:700;
-    text-shadow:0 2px 4px rgba(255,255,255,0.8);
-    font-size:20px;
-    z-index:10;
-    background:rgba(255,255,255,0.7);
-    padding:0.5rem 1rem;
-    border-radius:10px;
-    backdrop-filter:blur(10px);
-  }
-  .overlay{
-    position:absolute;
-    inset:0;
+  .cell{
+    aspect-ratio:1;
+    background:#fff;
+    border:3px solid var(--nav-bg);
+    border-radius:12px;
     display:flex;
     align-items:center;
     justify-content:center;
-    flex-direction:column;
-    color:#9400a4;
-    background:rgba(255,255,255,0.97);
-    backdrop-filter:blur(10px);
-    border-radius:16px;
-    z-index:20;
-    box-shadow:0 8px 32px rgba(0,0,0,0.1);
-  }
-  .overlay h2{
-    margin:0 0 1.5rem;
-    font-size:2.5rem;
+    font-size:3rem;
     font-weight:700;
-    text-shadow:0 2px 8px rgba(164,0,107,0.2);
+    cursor:pointer;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:var(--shadow-sm);
+    position:relative;
+    overflow:hidden;
+    padding:0.25rem;
+  }
+  .cell:hover:not(.taken){
+    background:rgba(59,107,86,0.1);
+    transform:scale(1.05);
+    border-color:var(--accent);
+    box-shadow:var(--shadow-md);
+  }
+  .cell.taken{
+    cursor:not-allowed;
+  }
+  .cell.winning{
+    background:linear-gradient(135deg, rgba(192,122,75,0.2) 0%, rgba(192,122,75,0.3) 100%);
+    animation:pulse 0.5s ease-in-out;
+  }
+  @keyframes pulse{
+    0%, 100%{transform:scale(1);}
+    50%{transform:scale(1.1);}
+  }
+  .cell::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at center, transparent 0%, rgba(255,255,255,0.8) 100%);
+    opacity:0;
+    transition:opacity 0.3s ease;
+  }
+  .cell:active:not(.taken)::before{
+    opacity:1;
   }
   .btn{
     margin-top:12px;
     padding:0.875rem 2rem;
     border-radius:12px;
-    background:linear-gradient(135deg, #ff69b4 0%, #c814ff 100%);
+    background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
     color:#fff;
     border:none;
     cursor:pointer;
     font-weight:700;
     font-size:1.1rem;
     transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
-    box-shadow:0 4px 16px rgba(255,105,180,0.3);
+    box-shadow:0 4px 16px rgba(59,107,86,0.3);
     letter-spacing:0.02em;
   }
   .btn:hover{
-    background:linear-gradient(135deg, #ff1493 0%, #d81b60 100%);
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
     transform:scale(1.08) translateY(-2px);
-    box-shadow:0 8px 24px rgba(255,105,180,0.5);
+    box-shadow:0 8px 24px rgba(192,122,75,0.4);
   }
   .btn:active{
     transform:scale(0.98) translateY(0);
@@ -223,6 +255,135 @@
     transform:scale(1.05);
     text-shadow:0 2px 8px rgba(0,0,0,0.2);
   }
+  .character-selector{
+    background:linear-gradient(135deg, #fff 0%, #fafafa 100%);
+    padding:1.5rem;
+    border-radius:14px;
+    margin:1.5rem 0;
+    border-left:5px solid var(--accent);
+    box-shadow:var(--shadow-sm);
+  }
+  .character-selector h3{
+    margin-top:0;
+    color:var(--accent);
+    font-size:1.25rem;
+    font-weight:600;
+  }
+  .player-selection{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2rem;
+    margin-top:1rem;
+  }
+  .player-box{
+    background:#fff;
+    padding:1rem;
+    border-radius:12px;
+    box-shadow:var(--shadow-sm);
+  }
+  .player-box h4{
+    margin:0 0 0.75rem;
+    color:var(--nav-bg);
+    font-size:1.1rem;
+  }
+  .character-options{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0.75rem;
+  }
+  .character-option{
+    aspect-ratio:1;
+    background:#f9f9f9;
+    border:3px solid #ddd;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    padding:0.5rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .character-option img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+  .character-option:hover{
+    transform:scale(1.1);
+    border-color:var(--accent);
+    box-shadow:var(--shadow-md);
+  }
+  .character-option.selected{
+    border-color:var(--nav-bg);
+    background:rgba(59,107,86,0.1);
+    box-shadow:0 0 0 3px rgba(59,107,86,0.2);
+  }
+  .music-player{
+    display:none;
+  }
+  .mute-button{
+    position:fixed;
+    bottom:2rem;
+    right:2rem;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    font-size:1.5rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:var(--shadow-lg);
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    z-index:50;
+  }
+  .mute-button:hover{
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    transform:scale(1.1);
+    box-shadow:0 8px 24px rgba(192,122,75,0.4);
+  }
+  .mute-button:active{
+    transform:scale(0.95);
+  }
+  @media (max-width:768px){
+    nav{flex-direction:column;align-items:stretch}
+    ul{width:100%;justify-content:center;flex-wrap:wrap;gap:0.3rem}
+    ul a{padding:0.5rem;font-size:0.95rem}
+    main{padding:0 1rem}
+    .card{padding:2rem}
+    h1{font-size:2rem}
+    h2{font-size:1.5rem}
+    h3{font-size:1.15rem}
+    .player-selection{grid-template-columns:1fr;gap:1.5rem}
+    .character-options{grid-template-columns:repeat(5, 1fr);gap:0.5rem}
+    .game-board{max-width:350px;gap:10px}
+    .cell{font-size:2.5rem}
+    .mode-selector{flex-direction:column}
+    .mode-btn{max-width:100%}
+    .mute-button{bottom:1rem;right:1rem;width:45px;height:45px;font-size:1.3rem}
+  }
+  @media (max-width:480px){
+    main{padding:0 0.75rem}
+    .card{padding:1.5rem}
+    h1{font-size:1.75rem}
+    h2{font-size:1.3rem}
+    .instructions{padding:1.25rem}
+    .character-selector{padding:1.25rem}
+    .player-box{padding:0.75rem}
+    .character-options{grid-template-columns:repeat(5, 1fr);gap:0.4rem}
+    .game-board{max-width:300px;gap:8px;padding:0.75rem}
+    .cell{font-size:2rem;padding:0.15rem}
+    ul{flex-direction:column;gap:0.5rem}
+    ul li{width:100%}
+    ul a{display:block;text-align:center;padding:0.6rem}
+    .game-controls{flex-direction:column}
+    .game-controls button{min-width:100%}
+    .mute-button{bottom:0.75rem;right:0.75rem;width:40px;height:40px;font-size:1.2rem}
+  }
 </style>
 </head>
 <body>
@@ -240,332 +401,353 @@
   </header>
   <main>
     <div class="card">
-      <h1>Interactive Game</h1>
-      <div class="instructions">
-        <h3>How to Play</h3>
-        <p>Click anywhere on the canvas to make the unicorn jump! Avoid the obstacles and collect stars to score points. Use arrow keys or WASD to move left and right. The game gets faster as you progress!</p>
-      </div>
-      <div class="game-wrap">
-        <div class="hud" id="hud">Score: 0 | Lives: 3</div>
-        <div class="overlay" id="gameOverlay">
-          <h2>Unicorn Runner</h2>
-          <button class="btn" onclick="startGame()">Start Game</button>
+      <h1>Tic-Tac-Toe</h1>
+      
+      <div class="character-selector">
+        <h3>Choose Your Characters</h3>
+        <div class="player-selection">
+          <div class="player-box">
+            <h4>Player X</h4>
+            <div class="character-options" id="playerXOptions">
+              <div class="character-option selected" data-char="reindeer" data-player="X" onclick="selectCharacter('X', 'reindeer', this)">
+                <img src="media/tttreindeer.png" alt="Reindeer">
+              </div>
+              <div class="character-option" data-char="tree" data-player="X" onclick="selectCharacter('X', 'tree', this)">
+                <img src="media/ttttree.png" alt="Tree">
+              </div>
+              <div class="character-option" data-char="bells" data-player="X" onclick="selectCharacter('X', 'bells', this)">
+                <img src="media/tttbells.png" alt="Bells">
+              </div>
+              <div class="character-option" data-char="wreath" data-player="X" onclick="selectCharacter('X', 'wreath', this)">
+                <img src="media/tttwreath.png" alt="Wreath">
+              </div>
+              <div class="character-option" data-char="hat" data-player="X" onclick="selectCharacter('X', 'hat', this)">
+                <img src="media/ttthat.png" alt="Hat">
+              </div>
+            </div>
+          </div>
+          
+          <div class="player-box">
+            <h4>Player O</h4>
+            <div class="character-options" id="playerOOptions">
+              <div class="character-option" data-char="reindeer" data-player="O" onclick="selectCharacter('O', 'reindeer', this)">
+                <img src="media/tttreindeer.png" alt="Reindeer">
+              </div>
+              <div class="character-option selected" data-char="tree" data-player="O" onclick="selectCharacter('O', 'tree', this)">
+                <img src="media/ttttree.png" alt="Tree">
+              </div>
+              <div class="character-option" data-char="bells" data-player="O" onclick="selectCharacter('O', 'bells', this)">
+                <img src="media/tttbells.png" alt="Bells">
+              </div>
+              <div class="character-option" data-char="wreath" data-player="O" onclick="selectCharacter('O', 'wreath', this)">
+                <img src="media/tttwreath.png" alt="Wreath">
+              </div>
+              <div class="character-option" data-char="hat" data-player="O" onclick="selectCharacter('O', 'hat', this)">
+                <img src="media/ttthat.png" alt="Hat">
+              </div>
+            </div>
+          </div>
         </div>
-        <canvas id="unicornGame" width="800" height="500"></canvas>
       </div>
+      
+      <div class="music-player">
+        <iframe id="musicPlayer" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A1732885695&color=%2368514e&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+        <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/sexyasskellyb" title="SexyAssKellyB" target="_blank" style="color: #cccccc; text-decoration: none;">SexyAssKellyB</a> · <a href="https://soundcloud.com/sexyasskellyb/sets/christmas-noncopyright" title="CHRISTMAS NONCOPYRIGHT" target="_blank" style="color: #cccccc; text-decoration: none;">CHRISTMAS NONCOPYRIGHT</a></div>
+      </div>
+      
+      <!-- Mute/Unmute Button -->
+      <button class="mute-button" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Music">
+        🔊
+      </button>
+      
+      <div class="mode-selector">
+        <button class="btn mode-btn active" onclick="setMode('ai')">🤖 Play vs AI</button>
+        <button class="btn mode-btn" onclick="setMode('2player')">👥 2 Players</button>
+      </div>
+      
+      <div class="game-status">
+        <h2 id="statusText">X's Turn</h2>
+      </div>
+      
+      <div class="game-board" id="gameBoard">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+      </div>
+      
       <div class="game-controls">
-        <button class="btn" onclick="startGame()">Restart</button>
-        <button class="btn" onclick="pauseGame()">Pause</button>
+        <button class="btn" onclick="resetGame()">New Game</button>
       </div>
+      
       <p><a class="back-btn" href="index.html">Back to Home</a></p>
     </div>
   </main>
   
   <script>
-    const canvas = document.getElementById('unicornGame');
-    const ctx = canvas.getContext('2d');
-    const hud = document.getElementById('hud');
-    const overlay = document.getElementById('gameOverlay');
+    // Game state
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let gameMode = 'ai'; // 'ai' or '2player'
+    let gameActive = true;
     
-    let gameState = 'menu'; // menu, playing, paused, gameOver
-    let score = 0;
-    let lives = 3;
-    let gameSpeed = 2;
+    // Character selections
+    let playerXChar = 'reindeer';
+    let playerOChar = 'tree';
     
-    // Game objects
-    let unicorn = {
-      x: 100,
-      y: 300,
-      width: 40,
-      height: 40,
-      velocityY: 0,
-      onGround: false,
-      color: '#FF69B4'
+    const characterImages = {
+      reindeer: 'media/tttreindeer.png',
+      tree: 'media/ttttree.png',
+      bells: 'media/tttbells.png',
+      wreath: 'media/tttwreath.png',
+      hat: 'media/ttthat.png'
     };
     
-    let obstacles = [];
-    let stars = [];
-    let particles = [];
+    const statusText = document.getElementById('statusText');
+    const cells = document.querySelectorAll('.cell');
     
-    // Game loop
-    function gameLoop() {
-      if (gameState !== 'playing') return;
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw background gradient
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#ffe6f7');
-      gradient.addColorStop(0.6, '#fff7fb');
-      gradient.addColorStop(1, '#ffffff');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Update and draw unicorn
-      updateUnicorn();
-      drawUnicorn();
-      
-      // Update and draw obstacles
-      updateObstacles();
-      drawObstacles();
-      
-      // Update and draw stars
-      updateStars();
-      drawStars();
-      
-      // Update and draw particles
-      updateParticles();
-      drawParticles();
-      
-      // Spawn obstacles
-      if (Math.random() < 0.02) {
-        spawnObstacle();
-      }
-      
-      // Spawn stars
-      if (Math.random() < 0.01) {
-        spawnStar();
-      }
-      
-      // Update HUD
-      hud.textContent = `Score: ${score} | Lives: ${lives}`;
-      
-      // Check game over
-      if (lives <= 0) {
-        gameOver();
-      }
-      
-      requestAnimationFrame(gameLoop);
-    }
+    // Winning combinations
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6]             // Diagonals
+    ];
     
-    function updateUnicorn() {
-      // Gravity
-      unicorn.velocityY += 0.5;
-      unicorn.y += unicorn.velocityY;
+    // Select character
+    function selectCharacter(player, character, element) {
+      // Remove selected class from all options for this player
+      const container = player === 'X' ? 'playerXOptions' : 'playerOOptions';
+      document.querySelectorAll(`#${container} .character-option`).forEach(opt => {
+        opt.classList.remove('selected');
+      });
       
-      // Ground collision
-      if (unicorn.y + unicorn.height > canvas.height - 50) {
-        unicorn.y = canvas.height - 50 - unicorn.height;
-        unicorn.velocityY = 0;
-        unicorn.onGround = true;
+      // Add selected class to clicked option
+      element.classList.add('selected');
+      
+      // Update character selection
+      if (player === 'X') {
+        playerXChar = character;
       } else {
-        unicorn.onGround = false;
+        playerOChar = character;
       }
-    }
-    
-    function drawUnicorn() {
-      ctx.save();
-      ctx.translate(unicorn.x + unicorn.width/2, unicorn.y + unicorn.height/2);
       
-      // Draw unicorn body
-      ctx.fillStyle = unicorn.color;
-      ctx.beginPath();
-      ctx.arc(0, 0, unicorn.width/2, 0, Math.PI * 2);
-      ctx.fill();
+      // Reset game with new characters
+      resetGame();
+    }
+    
+    // Toggle music mute
+    function toggleMute() {
+      const musicPlayer = document.getElementById('musicPlayer');
+      const muteBtn = document.getElementById('muteBtn');
+      const widget = SC.Widget(musicPlayer);
       
-      // Draw horn
-      ctx.fillStyle = '#FFD700';
-      ctx.beginPath();
-      ctx.moveTo(0, -unicorn.height/2);
-      ctx.lineTo(-5, -unicorn.height/2 - 15);
-      ctx.lineTo(5, -unicorn.height/2 - 15);
-      ctx.closePath();
-      ctx.fill();
+      widget.getVolume(function(volume) {
+        if (volume > 0) {
+          // Mute
+          widget.setVolume(0);
+          muteBtn.textContent = '🔇';
+          muteBtn.title = 'Unmute Music';
+        } else {
+          // Unmute
+          widget.setVolume(100);
+          muteBtn.textContent = '🔊';
+          muteBtn.title = 'Mute Music';
+        }
+      });
+    }
+    
+    // Initialize game
+    function initGame() {
+      cells.forEach(cell => {
+        cell.addEventListener('click', handleCellClick);
+      });
+    }
+    
+    // Set game mode
+    function setMode(mode) {
+      gameMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      resetGame();
+    }
+    
+    // Handle cell click
+    function handleCellClick(e) {
+      const index = parseInt(e.target.getAttribute('data-index'));
       
-      // Draw eye
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(-5, -5, 3, 0, Math.PI * 2);
-      ctx.fill();
+      if (board[index] !== '' || !gameActive) return;
       
-      ctx.restore();
+      makeMove(index, currentPlayer);
+      
+      if (gameActive && gameMode === 'ai' && currentPlayer === 'O') {
+        // AI's turn after a short delay
+        setTimeout(aiMove, 500);
+      }
     }
     
-    function spawnObstacle() {
-      obstacles.push({
-        x: canvas.width,
-        y: canvas.height - 50 - 30,
-        width: 30,
-        height: 30,
-        color: '#8B4513'
-      });
+    // Make a move
+    function makeMove(index, player) {
+      board[index] = player;
+      
+      // Create and insert image instead of text
+      const img = document.createElement('img');
+      const character = player === 'X' ? playerXChar : playerOChar;
+      img.src = characterImages[character];
+      img.alt = player;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      img.style.padding = '0.5rem';
+      cells[index].innerHTML = '';
+      cells[index].appendChild(img);
+      
+      cells[index].classList.add('taken');
+      
+      if (checkWin(player)) {
+        gameActive = false;
+        statusText.textContent = `${player} Wins!`;
+        highlightWinningCells(player);
+        return;
+      }
+      
+      if (checkDraw()) {
+        gameActive = false;
+        statusText.textContent = "It's a Draw!";
+        return;
+      }
+      
+      // Switch player
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      updateStatus();
     }
     
-    function updateObstacles() {
-      for (let i = obstacles.length - 1; i >= 0; i--) {
-        const obs = obstacles[i];
-        obs.x -= gameSpeed;
+    // AI move using minimax algorithm
+    function aiMove() {
+      if (!gameActive) return;
+      
+      const bestMove = findBestMove();
+      makeMove(bestMove, 'O');
+    }
+    
+    // Minimax algorithm for AI
+    function minimax(newBoard, player) {
+      const availSpots = newBoard.map((val, idx) => val === '' ? idx : null).filter(val => val !== null);
+      
+      // Check for terminal states
+      if (checkWinForBoard(newBoard, 'X')) return { score: -10 };
+      if (checkWinForBoard(newBoard, 'O')) return { score: 10 };
+      if (availSpots.length === 0) return { score: 0 };
+      
+      const moves = [];
+      
+      for (let i = 0; i < availSpots.length; i++) {
+        const move = {};
+        move.index = availSpots[i];
+        newBoard[availSpots[i]] = player;
         
-        // Collision detection
-        if (unicorn.x < obs.x + obs.width &&
-            unicorn.x + unicorn.width > obs.x &&
-            unicorn.y < obs.y + obs.height &&
-            unicorn.y + unicorn.height > obs.y) {
-          obstacles.splice(i, 1);
-          lives--;
-          createParticles(unicorn.x + unicorn.width/2, unicorn.y + unicorn.height/2);
-        } else if (obs.x + obs.width < 0) {
-          obstacles.splice(i, 1);
-          score += 10;
+        if (player === 'O') {
+          const result = minimax(newBoard, 'X');
+          move.score = result.score;
+        } else {
+          const result = minimax(newBoard, 'O');
+          move.score = result.score;
         }
-      }
-    }
-    
-    function drawObstacles() {
-      obstacles.forEach(obs => {
-        ctx.fillStyle = obs.color;
-        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-      });
-    }
-    
-    function spawnStar() {
-      stars.push({
-        x: canvas.width,
-        y: Math.random() * (canvas.height - 100) + 50,
-        radius: 10,
-        rotation: 0,
-        color: '#FFD700'
-      });
-    }
-    
-    function updateStars() {
-      for (let i = stars.length - 1; i >= 0; i--) {
-        const star = stars[i];
-        star.x -= gameSpeed;
-        star.rotation += 0.1;
         
-        // Collision detection
-        const dx = (unicorn.x + unicorn.width/2) - star.x;
-        const dy = (unicorn.y + unicorn.height/2) - star.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance < unicorn.width/2 + star.radius) {
-          stars.splice(i, 1);
-          score += 50;
-          createParticles(star.x, star.y, '#FFD700');
-        } else if (star.x + star.radius < 0) {
-          stars.splice(i, 1);
+        newBoard[availSpots[i]] = '';
+        moves.push(move);
+      }
+      
+      let bestMove;
+      if (player === 'O') {
+        let bestScore = -Infinity;
+        for (let i = 0; i < moves.length; i++) {
+          if (moves[i].score > bestScore) {
+            bestScore = moves[i].score;
+            bestMove = i;
+          }
+        }
+      } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < moves.length; i++) {
+          if (moves[i].score < bestScore) {
+            bestScore = moves[i].score;
+            bestMove = i;
+          }
         }
       }
+      
+      return moves[bestMove];
     }
     
-    function drawStars() {
-      stars.forEach(star => {
-        ctx.save();
-        ctx.translate(star.x, star.y);
-        ctx.rotate(star.rotation);
-        ctx.fillStyle = star.color;
-        ctx.beginPath();
-        for (let i = 0; i < 5; i++) {
-          const angle = (i * 4 * Math.PI / 5) - Math.PI / 2;
-          const x = Math.cos(angle) * star.radius;
-          const y = Math.sin(angle) * star.radius;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
+    // Find best move for AI
+    function findBestMove() {
+      const result = minimax([...board], 'O');
+      return result.index;
+    }
+    
+    // Check win for a specific board state
+    function checkWinForBoard(checkBoard, player) {
+      return winningCombinations.some(combination => {
+        return combination.every(index => checkBoard[index] === player);
       });
     }
     
-    function createParticles(x, y, color = '#FF69B4') {
-      for (let i = 0; i < 10; i++) {
-        particles.push({
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 4,
-          vy: (Math.random() - 0.5) * 4,
-          life: 30,
-          color: color
-        });
-      }
-    }
-    
-    function updateParticles() {
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        
-        if (p.life <= 0) {
-          particles.splice(i, 1);
-        }
-      }
-    }
-    
-    function drawParticles() {
-      particles.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.life / 30;
-        ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+    // Check if current player won
+    function checkWin(player) {
+      return winningCombinations.some(combination => {
+        return combination.every(index => board[index] === player);
       });
-      ctx.globalAlpha = 1;
     }
     
-    // Controls
-    canvas.addEventListener('click', () => {
-      if (gameState === 'playing' && unicorn.onGround) {
-        unicorn.velocityY = -12;
-      }
-    });
-    
-    document.addEventListener('keydown', (e) => {
-      if (gameState === 'playing') {
-        if ((e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && unicorn.onGround) {
-          unicorn.velocityY = -12;
-        }
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-          unicorn.x = Math.max(0, unicorn.x - 5);
-        }
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-          unicorn.x = Math.min(canvas.width - unicorn.width, unicorn.x + 5);
-        }
-      }
-    });
-    
-    function startGame() {
-      gameState = 'playing';
-      score = 0;
-      lives = 3;
-      gameSpeed = 2;
-      unicorn.x = 100;
-      unicorn.y = 300;
-      unicorn.velocityY = 0;
-      obstacles = [];
-      stars = [];
-      particles = [];
-      overlay.style.display = 'none';
-      gameLoop();
+    // Check for draw
+    function checkDraw() {
+      return board.every(cell => cell !== '');
     }
     
-    function pauseGame() {
-      if (gameState === 'playing') {
-        gameState = 'paused';
-        overlay.style.display = 'flex';
-        overlay.querySelector('h2').textContent = '⏸️ Paused';
-        overlay.querySelector('.btn').textContent = 'Resume';
-        overlay.querySelector('.btn').onclick = resumeGame;
+    // Highlight winning cells
+    function highlightWinningCells(player) {
+      winningCombinations.forEach(combination => {
+        if (combination.every(index => board[index] === player)) {
+          combination.forEach(index => {
+            cells[index].classList.add('winning');
+          });
+        }
+      });
+    }
+    
+    // Update status text
+    function updateStatus() {
+      if (gameMode === 'ai') {
+        statusText.textContent = currentPlayer === 'X' ? "Your Turn (X)" : "AI's Turn (O)";
+      } else {
+        statusText.textContent = `${currentPlayer}'s Turn`;
       }
     }
     
-    function resumeGame() {
-      gameState = 'playing';
-      overlay.style.display = 'none';
-      gameLoop();
+    // Reset game
+    function resetGame() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      gameActive = true;
+      
+      cells.forEach(cell => {
+        cell.innerHTML = '';
+        cell.classList.remove('taken', 'winning');
+      });
+      
+      updateStatus();
     }
     
-    function gameOver() {
-      gameState = 'gameOver';
-      overlay.style.display = 'flex';
-      overlay.querySelector('h2').textContent = `🎮 Game Over! Score: ${score}`;
-      overlay.querySelector('.btn').textContent = 'Play Again';
-      overlay.querySelector('.btn').onclick = startGame;
-    }
-    
-    // Add active state to navigation
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
+      initGame();
+      
+      // Add active state to navigation
       const currentPage = window.location.pathname.split('/').pop() || 'game.html';
       const navLinks = document.querySelectorAll('nav a');
       navLinks.forEach(link => {

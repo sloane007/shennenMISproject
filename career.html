@@ -210,6 +210,30 @@
     transform:scale(1.05);
     text-shadow:0 2px 8px rgba(0,0,0,0.2);
   }
+  @media (max-width:768px){
+    nav{flex-direction:column;align-items:stretch}
+    ul{width:100%;justify-content:center;flex-wrap:wrap;gap:0.3rem}
+    ul a{padding:0.5rem;font-size:0.95rem}
+    main{padding:0 1rem}
+    .card{padding:2rem}
+    h1{font-size:2rem}
+    h3{font-size:1.2rem}
+    h4{font-size:1rem}
+    p{font-size:1rem}
+    .company-header{flex-direction:column;align-items:flex-start}
+    .company-header img{height:35px}
+  }
+  @media (max-width:480px){
+    main{padding:0 0.75rem}
+    .card{padding:1.5rem}
+    h1{font-size:1.75rem}
+    h3{font-size:1.1rem}
+    .company-section{padding:1.5rem}
+    ul{flex-direction:column;gap:0.5rem}
+    ul li{width:100%}
+    ul a{display:block;text-align:center;padding:0.6rem}
+    .toggle-btn{width:100%;padding:0.75rem}
+  }
   </style>
 </head>
 <body>

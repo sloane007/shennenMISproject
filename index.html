@@ -194,7 +194,30 @@
      animation:fadeIn 0.8s ease 0.5s forwards;
      font-size:0.9rem;
    }
-   @media (max-width:700px){.hero{flex-direction:column;text-align:center}}
+   @media (max-width:768px){
+     .hero{flex-direction:column;text-align:center}
+     nav{flex-direction:column;align-items:stretch}
+     ul.nav{width:100%;justify-content:center;gap:0.3rem}
+     ul.nav a{padding:0.5rem;font-size:0.95rem}
+     main{padding:0 1rem}
+     .card{padding:1.5rem}
+     h1{font-size:2rem}
+     h2{font-size:1.5rem}
+     h3{font-size:1.15rem}
+     p{font-size:1rem}
+     .hero img{width:120px;height:120px}
+   }
+   @media (max-width:480px){
+     main{padding:0 0.75rem}
+     .card{padding:1rem;border-radius:12px}
+     h1{font-size:1.75rem}
+     h2{font-size:1.3rem}
+     h3{font-size:1.1rem}
+     .hero img{width:100px;height:100px}
+     ul.nav{flex-direction:column;gap:0.5rem}
+     ul.nav li{width:100%}
+     ul.nav a{display:block;text-align:center;padding:0.6rem}
+   }
    @keyframes fadeInUp{
      from{opacity:0;transform:translateY(30px)}
      to{opacity:1;transform:translateY(0)}
@@ -271,12 +294,16 @@
 
 
    <section style="margin-top:1.25rem" class="card">
-     <h2>Welcome Video</Video></h2>
-    <div class="video-wrapper">
-      <video controls playsinline>
-        <source src="EmojiMovie784228142.mp4" type="video/mp4">
-      </video>
-    </div>
+     <h2>Welcome Video</h2>
+     <div class="video-wrapper" id="videoContainer" style="cursor:pointer; position:relative;">
+       <video id="welcomeVideo" playsinline style="width:100%; height:100%;">
+         <source src="media/EmojiMovie784228142.mp4" type="video/mp4">
+         Your browser does not support the video tag.
+       </video>
+       <div id="playOverlay" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(59,107,86,0.85); width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:all 0.3s ease;">
+         <span style="font-size:2.5rem; color:#fff; margin-left:6px;">▶</span>
+       </div>
+     </div>
    </section>
 
 
@@ -349,6 +376,36 @@
      document.querySelectorAll('.card').forEach(card => {
        observer.observe(card);
      });
+     
+     // Video click-to-play functionality
+     const videoContainer = document.getElementById('videoContainer');
+     const welcomeVideo = document.getElementById('welcomeVideo');
+     const playOverlay = document.getElementById('playOverlay');
+     
+     if (videoContainer && welcomeVideo && playOverlay) {
+       videoContainer.addEventListener('click', function() {
+         if (welcomeVideo.paused) {
+           welcomeVideo.play();
+           playOverlay.style.opacity = '0';
+           playOverlay.style.visibility = 'hidden';
+         } else {
+           welcomeVideo.pause();
+           playOverlay.style.opacity = '1';
+           playOverlay.style.visibility = 'visible';
+         }
+       });
+       
+       // Show controls when video is playing
+       welcomeVideo.addEventListener('play', function() {
+         welcomeVideo.setAttribute('controls', 'controls');
+       });
+       
+       // Hide play button when video ends
+       welcomeVideo.addEventListener('ended', function() {
+         playOverlay.style.opacity = '1';
+         playOverlay.style.visibility = 'visible';
+       });
+     }
    });
  </script>
 </body>
