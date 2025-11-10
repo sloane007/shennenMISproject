@@ -266,14 +266,19 @@
  <header>
    <nav>
        <div class="brand">Sloane Hennen</div>
-       <ul class="nav">
+       <button class="hamburger" id="hamburger" aria-label="Menu">
+         <span></span>
+         <span></span>
+         <span></span>
+       </button>
+       <ul class="nav" id="navMenu">
+       <li><a href="index.html">Home</a></li>
        <li><a href="career.html">Career Intrests</a></li>
        <li><a href="discover.html">Discover</a></li>
        <li><a href="hobbies.html">Hobbies</a></li>
        <li><a href="game.html">Game</a></li>
        <li><a href="resume.html">Resume</a></li>
        </ul>
-     </div>
    </nav>
  </header>
 
@@ -354,6 +359,33 @@
      if (brand) {
        brand.addEventListener('click', function() {
          window.location.href = 'index.html';
+       });
+     }
+     
+     // Hamburger menu toggle
+     const hamburger = document.getElementById('hamburger');
+     const navMenu = document.getElementById('navMenu');
+     
+     if (hamburger && navMenu) {
+       hamburger.addEventListener('click', function() {
+         hamburger.classList.toggle('active');
+         navMenu.classList.toggle('active');
+       });
+       
+       // Close menu when clicking a link
+       navMenu.querySelectorAll('a').forEach(link => {
+         link.addEventListener('click', function() {
+           hamburger.classList.remove('active');
+           navMenu.classList.remove('active');
+         });
+       });
+       
+       // Close menu when clicking outside
+       document.addEventListener('click', function(event) {
+         if (!hamburger.contains(event.target) && !navMenu.contains(event.target)) {
+           hamburger.classList.remove('active');
+           navMenu.classList.remove('active');
+         }
        });
      }
      
