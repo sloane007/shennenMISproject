@@ -44,7 +44,13 @@
       border-bottom:1px solid rgba(255,255,255,0.1);
     }
     nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-    ul{list-style:none;display:flex;gap:0.5rem;margin:0;padding:0}
+    .menu-toggle{display:none;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.6rem 1.2rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.95rem;transition:all 0.3s ease;align-items:center;gap:0.5rem}
+    .menu-toggle:hover{background:rgba(255,255,255,0.25)}
+    .menu-toggle .arrow{font-size:0.75rem;transition:transform 0.3s ease}
+    .menu-toggle.active .arrow{transform:rotate(180deg)}
+    ul{list-style:none;list-style-type:none;display:flex;gap:0.5rem;margin:0;padding:0}
+    ul li{list-style:none;list-style-type:none}
+    ul li::before{content:none;display:none}
     a{
       color:#fff;
       text-decoration:none;
@@ -186,10 +192,19 @@
     transform:scale(1.05);
     text-shadow:0 2px 8px rgba(0,0,0,0.2);
   }
+  @media (max-width:1024px){
+    .menu-toggle{display:flex}
+    ul{display:none;position:absolute;top:100%;left:0;right:0;background:linear-gradient(135deg, var(--nav-bg) 0%, #2d5545 100%);flex-direction:column;padding:1rem;box-shadow:0 8px 16px rgba(0,0,0,0.2);border-top:1px solid rgba(255,255,255,0.1);margin-top:0;gap:0.5rem;max-height:0;overflow:hidden;opacity:0;transition:all 0.3s ease}
+    ul.active{display:flex;max-height:500px;opacity:1}
+    ul li{width:100%;text-align:center}
+    ul a{display:block;padding:0.75rem 1rem;width:100%}
+  }
   @media (max-width:768px){
-    nav{flex-direction:column;align-items:stretch}
-    ul{width:100%;justify-content:center;flex-wrap:wrap;gap:0.3rem}
-    ul a{padding:0.5rem;font-size:0.95rem}
+    header{padding:0.75rem 1rem}
+    nav{flex-direction:column;align-items:stretch;gap:0.75rem}
+    ul{width:100%;justify-content:center;flex-wrap:wrap;gap:0.4rem}
+    ul li{flex:0 1 auto}
+    ul a{padding:0.5rem 0.75rem;font-size:0.85rem;white-space:nowrap}
     main{padding:0 1rem}
     .card{padding:2rem}
     h1{font-size:2rem}
@@ -205,9 +220,15 @@
     h2{font-size:1.3rem}
     h3{font-size:1.15rem}
     .info-section{padding:1.25rem}
-    ul{flex-direction:column;gap:0.5rem}
-    ul li{width:100%}
-    ul a{display:block;text-align:center;padding:0.6rem}
+    header{padding:0.5rem 0.75rem}
+    nav{gap:0.5rem}
+    ul{flex-direction:row;gap:0.25rem;justify-content:center}
+    ul li{flex:0 1 auto;min-width:0}
+    ul a{display:block;text-align:center;padding:0.4rem 0.5rem;font-size:0.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  }
+  @media (max-width:360px){
+    ul{flex-wrap:wrap;gap:0.2rem}
+    ul a{padding:0.35rem 0.4rem;font-size:0.7rem}
   }
   </style>
 </head>
@@ -215,10 +236,9 @@
   <header>
     <nav>
       <div style="font-weight:700">Sloane Hennen</div>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span>Discover</span>
+        <span class="arrow">▼</span>
       </button>
       <ul id="navMenu">
         <li><a href="index.html">Home</a></li>
@@ -282,26 +302,27 @@
         });
       }
       
-      // Hamburger menu toggle
-      const hamburger = document.getElementById('hamburger');
+      // Menu toggle functionality
+      const menuToggle = document.getElementById('menuToggle');
       const navMenu = document.getElementById('navMenu');
       
-      if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-          hamburger.classList.toggle('active');
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          menuToggle.classList.toggle('active');
           navMenu.classList.toggle('active');
         });
         
         navMenu.querySelectorAll('a').forEach(link => {
           link.addEventListener('click', function() {
-            hamburger.classList.remove('active');
+            menuToggle.classList.remove('active');
             navMenu.classList.remove('active');
           });
         });
         
         document.addEventListener('click', function(event) {
-          if (!hamburger.contains(event.target) && !navMenu.contains(event.target)) {
-            hamburger.classList.remove('active');
+          if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
+            menuToggle.classList.remove('active');
             navMenu.classList.remove('active');
           }
         });
